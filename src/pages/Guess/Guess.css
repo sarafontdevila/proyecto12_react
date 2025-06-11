@@ -1,0 +1,46 @@
+.guess-input-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.guess-input {
+  padding: 10px;
+  width: 60%;
+  max-width: 300px;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.guess-button,
+.next-button,
+.hint-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  margin: 5px;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  background-color: #1e90ff;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.guess-button:hover,
+.next-button:hover,
+.hint-button:hover {
+  background-color: #005bb5;
+}
+
+.feedback {
+  margin-top: 15px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.correct {
+  color: green;
+}
+
+.incorrect {
+  color: red;
+}

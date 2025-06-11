@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Press+Start+2P&display=swap');
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+  list-style:none;
+  text-decoration:none;
+  font-family: 'Cinzel', serif;
+  color: var(--color-2);
+}
+
+:root {
+  --color-1: #3b0d0d;
+  --color-2: #f2f2f2;
+  --color-3: #a79c7b;
+  --color-4:#c0b0a0;
+  --color-5:#6d5d3b;
+}
+
+body {
+  background-color:var(--color-1)
+}
