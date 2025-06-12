@@ -1,4 +1,3 @@
-import { useState } from "react"
 import "./ButtonPage.css";
 
 const ButtonPage = ({ page, setPage}) => {

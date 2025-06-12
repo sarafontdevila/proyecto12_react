@@ -1,7 +1,5 @@
-import "./CharacterCard.css"
-
 import React from 'react'
-
+import "./CharacterCard.css"
 const CharacterCard = ({character}) => {
   return (
     <div className="character-card">

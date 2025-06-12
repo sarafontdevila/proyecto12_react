@@ -6,7 +6,6 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Determinar la ruta activa basada en la URL actual
   const getActiveRoute = () => {
     const path = location.pathname;
     if (path === '/' || path.startsWith('/character')) return 'characters';

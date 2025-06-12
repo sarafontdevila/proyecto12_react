@@ -25,7 +25,6 @@ const Characters = () => {
 
   return (
     <>
-      <Header />
       <main id="characters">
         {loading && <Loading />}
         <div className="container">

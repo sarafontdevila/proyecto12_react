@@ -41,7 +41,6 @@ const Guess = () => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
   const [userGuess, setUserGuess] = useState('');
   const [showHint, setShowHint] = useState(false);
-  const [characters, setCharacters] = useState([]);
 
   const fetchCharacters = async () => {
     try {
@@ -50,7 +49,6 @@ const Guess = () => {
       const data = await response.json();
 
       if (Array.isArray(data) && data.length > 0) {
-        setCharacters(data);
         const randomCharacter = data[Math.floor(Math.random() * data.length)];
         dispatch({
           type: 'SET_CHARACTER',
@@ -113,9 +111,14 @@ const Guess = () => {
 
   return (
     <div className="guess-game">
-      <h1>Guess the Game of Thrones Character</h1>
+      <h1>Guess who the Character is</h1>
       <div className="score">
         Score: {state.score} | Correct: {state.correctGuesses} / {state.totalGuesses}
+      </div>
+      <div className="reset-section">
+        <button onClick={resetGame} className="reset-button">
+          Reset Game
+        </button>
       </div>
 
       {state.currentCharacter && (
@@ -127,7 +130,7 @@ const Guess = () => {
                 alt="Character to guess"
                 className="character-image"
               />
-              <div className="image-overlay">❓</div>
+              <div className="image-overlay"></div>
             </div>
 
             {showHint && (
@@ -173,11 +176,7 @@ const Guess = () => {
         </div>
       )}
 
-      <div className="reset-section">
-        <button onClick={resetGame} className="reset-button">
-          Reset Game
-        </button>
-      </div>
+
     </div>
   );
 };
