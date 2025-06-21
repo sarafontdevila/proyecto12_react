@@ -1,6 +1,5 @@
-import React, { useReducer, useState, useEffect, useCallback } from 'react'; // 
+import React, { useReducer, useState, useEffect } from 'react';
 import './Guess.css';
-import { useCharacters } from './contexts/CharacterContext';
 
 const initialState = {
   score: 0,
@@ -43,29 +42,31 @@ const Guess = () => {
   const [userGuess, setUserGuess] = useState('');
   const [showHint, setShowHint] = useState(false);
 
-  const { characters, loading, error } = useCharacters();
+  const fetchCharacters = async () => {
+    try {
+      const page = Math.floor(Math.random() * 45) + 1;
+      const response = await fetch(`https://thronesapi.com/api/v2/Characters?page=${page}&limit=5`);
+      const data = await response.json();
 
-  
-  const selectRandomCharacter = useCallback(() => {
-    if (characters.length > 0) {
-      const randomCharacter = characters[Math.floor(Math.random() * characters.length)];
-      dispatch({
-        type: 'SET_CHARACTER',
-        payload: {
-          ...randomCharacter,
-          fullName: randomCharacter.fullName,
-          aliases: [randomCharacter.firstName, randomCharacter.lastName],
-        },
-      });
+      if (Array.isArray(data) && data.length > 0) {
+        const randomCharacter = data[Math.floor(Math.random() * data.length)];
+        dispatch({
+          type: 'SET_CHARACTER',
+          payload: {
+            ...randomCharacter,
+            fullName: randomCharacter.fullName,
+            aliases: [randomCharacter.firstName, randomCharacter.lastName],
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching characters:', error);
     }
-  }, [characters, dispatch]); 
+  };
 
   useEffect(() => {
-    
-    if (!loading && characters.length > 0) { 
-      selectRandomCharacter();
-    }
-  }, [loading, characters, selectRandomCharacter]); 
+    fetchCharacters();
+  }, []);
 
   const normalizeString = (str) =>
     str.toLowerCase().trim().replace(/[^a-zA-Z0-9\s]/g, '');
@@ -86,7 +87,7 @@ const Guess = () => {
   };
 
   const nextCharacter = () => {
-    selectRandomCharacter();
+    fetchCharacters();
     dispatch({ type: 'RESET_STATUS' });
     setShowHint(false);
   };
@@ -103,18 +104,10 @@ const Guess = () => {
 
   const resetGame = () => {
     dispatch({ type: 'RESET_GAME' });
-    selectRandomCharacter();
+    fetchCharacters();
     setUserGuess('');
     setShowHint(false);
   };
-
-  if (loading) {
-    return <div className="guess-game">Loading characters...</div>;
-  }
-
-  if (error) {
-    return <div className="guess-game">Error: {error}</div>;
-  }
 
   return (
     <div className="guess-game">
@@ -128,7 +121,7 @@ const Guess = () => {
         </button>
       </div>
 
-      {state.currentCharacter ? (
+      {state.currentCharacter && (
         <div className="game-content">
           <div className="character-section">
             <div className="character-image-container">
@@ -181,9 +174,9 @@ const Guess = () => {
             )}
           </div>
         </div>
-      ) : (
-        <div className="no-character-message">No character available. Please try again.</div>
       )}
+
+
     </div>
   );
 };

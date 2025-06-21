@@ -6,12 +6,14 @@ import Guess from "./pages/Guess/Guess";
 import Search from "./pages/Search/Search";
 import Header from "./components/Header/Header";
 import Results from "./components/Results/Results";
+import { CharacterProvider } from "./contexts/CharacterContext";
 
 
 const App = () => {
   return (
     <>
       <Header />
+      <CharacterProvider> 
       <Routes>
         <Route path="/" element={<Characters />} />
         <Route path="/character/:id" element={<Character/>} />
@@ -19,6 +21,7 @@ const App = () => {
         <Route path="/search" element={<Search />} />
         <Route path="/results" element={<Results />} />
       </Routes>
+      </CharacterProvider>
     </>
   )
 };

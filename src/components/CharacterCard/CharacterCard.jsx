@@ -5,6 +5,8 @@ const CharacterCard = ({character}) => {
     <div className="character-card">
         <div className= "back">
           <h2>{character.fullName}</h2>
+          <p>{character.title}</p>
+          <p>{character.family}</p>
           </div>
         <div className="img_wrp">
         <img 
