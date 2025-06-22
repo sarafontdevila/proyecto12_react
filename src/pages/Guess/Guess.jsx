@@ -1,6 +1,6 @@
-import React, { useReducer, useState, useEffect, useCallback } from 'react'; // 
+import React, { useReducer, useState, useEffect, useCallback } from 'react';
 import './Guess.css';
-import { useCharacters } from './contexts/CharacterContext';
+import { useCharacters } from '../../contexts/CharacterContext'
 
 const initialState = {
   score: 0,
@@ -45,38 +45,62 @@ const Guess = () => {
 
   const { characters, loading, error } = useCharacters();
 
-  
+  // Función para seleccionar personaje aleatorio
   const selectRandomCharacter = useCallback(() => {
-    if (characters.length > 0) {
-      const randomCharacter = characters[Math.floor(Math.random() * characters.length)];
+    if (characters && characters.length > 0) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      const randomCharacter = characters[randomIndex];
+      
+      // Validar que el personaje tenga las propiedades necesarias
+      if (!randomCharacter) {
+        console.error('Selected character is null or undefined');
+        return;
+      }
+
+      // Crear aliases de manera más segura
+      const aliases = [];
+      if (randomCharacter.firstName) aliases.push(randomCharacter.firstName);
+      if (randomCharacter.lastName) aliases.push(randomCharacter.lastName);
+      if (randomCharacter.aliases && Array.isArray(randomCharacter.aliases)) {
+        aliases.push(...randomCharacter.aliases);
+      }
+
+      const characterData = {
+        ...randomCharacter,
+        fullName: randomCharacter.fullName || `${randomCharacter.firstName || ''} ${randomCharacter.lastName || ''}`.trim(),
+        aliases: aliases,
+        imageUrl: randomCharacter.imageUrl || '/assets/default-character.png' // Imagen por defecto
+      };
+
       dispatch({
         type: 'SET_CHARACTER',
-        payload: {
-          ...randomCharacter,
-          fullName: randomCharacter.fullName,
-          aliases: [randomCharacter.firstName, randomCharacter.lastName],
-        },
+        payload: characterData,
       });
     }
-  }, [characters, dispatch]); 
+  }, [characters]);
 
+  // Efecto para cargar el primer personaje
   useEffect(() => {
-    
-    if (!loading && characters.length > 0) { 
+    if (!loading && !error && characters && characters.length > 0 && !state.currentCharacter) {
       selectRandomCharacter();
     }
-  }, [loading, characters, selectRandomCharacter]); 
+  }, [loading, error, characters, state.currentCharacter, selectRandomCharacter]);
 
-  const normalizeString = (str) =>
-    str.toLowerCase().trim().replace(/[^a-zA-Z0-9\s]/g, '');
+  const normalizeString = (str) => {
+    if (!str || typeof str !== 'string') return '';
+    return str.toLowerCase().trim().replace(/[^a-zA-Z0-9\s]/g, '');
+  };
 
   const checkGuess = () => {
     if (!userGuess.trim() || !state.currentCharacter) return;
 
     const normalizedGuess = normalizeString(userGuess);
-    const { fullName, aliases } = state.currentCharacter;
+    const { fullName, aliases = [] } = state.currentCharacter;
 
-    const isCorrect = [fullName, ...(aliases || [])].some(
+    // Crear array de nombres válidos para comparar
+    const validNames = [fullName, ...aliases].filter(Boolean);
+    
+    const isCorrect = validNames.some(
       (name) => normalizeString(name) === normalizedGuess
     );
 
@@ -97,23 +121,35 @@ const Guess = () => {
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      state.gameStatus === 'playing' ? checkGuess() : nextCharacter();
+      if (state.gameStatus === 'playing') {
+        checkGuess();
+      } else {
+        nextCharacter();
+      }
     }
   };
 
   const resetGame = () => {
     dispatch({ type: 'RESET_GAME' });
-    selectRandomCharacter();
     setUserGuess('');
     setShowHint(false);
+    // Seleccionar nuevo personaje después de resetear
+    setTimeout(() => {
+      selectRandomCharacter();
+    }, 100);
   };
 
+  // Estados de carga y error
   if (loading) {
     return <div className="guess-game">Loading characters...</div>;
   }
 
   if (error) {
     return <div className="guess-game">Error: {error}</div>;
+  }
+
+  if (!characters || characters.length === 0) {
+    return <div className="guess-game">No characters available. Please check your data source.</div>;
   }
 
   return (
@@ -136,11 +172,14 @@ const Guess = () => {
                 src={state.currentCharacter.imageUrl}
                 alt="Character to guess"
                 className="character-image"
+                onError={(e) => {
+                  e.target.src = '/assets/default-character.png'; // Imagen por defecto si falla
+                }}
               />
               <div className="image-overlay"></div>
             </div>
 
-            {showHint && (
+            {showHint && state.currentCharacter.fullName && (
               <div className="hint">
                 💡 Hint: This character's name starts with "
                 {state.currentCharacter.fullName.charAt(0)}"
@@ -177,12 +216,16 @@ const Guess = () => {
               <div className="feedback correct">✅ Correct!</div>
             )}
             {state.gameStatus === 'incorrect' && (
-              <div className="feedback incorrect">❌ Incorrect. Try the next one!</div>
+              <div className="feedback incorrect">
+                ❌ Incorrect. The answer was: {state.currentCharacter.fullName}
+              </div>
             )}
           </div>
         </div>
       ) : (
-        <div className="no-character-message">No character available. Please try again.</div>
+        <div className="no-character-message">
+          Loading character... Please wait.
+        </div>
       )}
     </div>
   );
