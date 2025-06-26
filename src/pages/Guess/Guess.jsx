@@ -1,6 +1,6 @@
 import React, { useReducer, useState, useEffect, useCallback } from 'react';
 import './Guess.css';
-import { useCharacters } from '../../contexts/CharacterContext'
+import  useCharacters from '../../customHook/useCharacters';
 
 const initialState = {
   score: 0,
@@ -45,19 +45,19 @@ const Guess = () => {
 
   const { characters, loading, error } = useCharacters();
 
-  // Función para seleccionar personaje aleatorio
+
   const selectRandomCharacter = useCallback(() => {
     if (characters && characters.length > 0) {
       const randomIndex = Math.floor(Math.random() * characters.length);
       const randomCharacter = characters[randomIndex];
       
-      // Validar que el personaje tenga las propiedades necesarias
+     
       if (!randomCharacter) {
         console.error('Selected character is null or undefined');
         return;
       }
 
-      // Crear aliases de manera más segura
+
       const aliases = [];
       if (randomCharacter.firstName) aliases.push(randomCharacter.firstName);
       if (randomCharacter.lastName) aliases.push(randomCharacter.lastName);
@@ -69,7 +69,7 @@ const Guess = () => {
         ...randomCharacter,
         fullName: randomCharacter.fullName || `${randomCharacter.firstName || ''} ${randomCharacter.lastName || ''}`.trim(),
         aliases: aliases,
-        imageUrl: randomCharacter.imageUrl || '/assets/default-character.png' // Imagen por defecto
+        imageUrl: randomCharacter.imageUrl || '/assets/default-character.png' 
       };
 
       dispatch({
@@ -79,7 +79,6 @@ const Guess = () => {
     }
   }, [characters]);
 
-  // Efecto para cargar el primer personaje
   useEffect(() => {
     if (!loading && !error && characters && characters.length > 0 && !state.currentCharacter) {
       selectRandomCharacter();
@@ -97,7 +96,6 @@ const Guess = () => {
     const normalizedGuess = normalizeString(userGuess);
     const { fullName, aliases = [] } = state.currentCharacter;
 
-    // Crear array de nombres válidos para comparar
     const validNames = [fullName, ...aliases].filter(Boolean);
     
     const isCorrect = validNames.some(
@@ -133,13 +131,12 @@ const Guess = () => {
     dispatch({ type: 'RESET_GAME' });
     setUserGuess('');
     setShowHint(false);
-    // Seleccionar nuevo personaje después de resetear
+
     setTimeout(() => {
       selectRandomCharacter();
     }, 100);
   };
 
-  // Estados de carga y error
   if (loading) {
     return <div className="guess-game">Loading characters...</div>;
   }
@@ -173,7 +170,7 @@ const Guess = () => {
                 alt="Character to guess"
                 className="character-image"
                 onError={(e) => {
-                  e.target.src = '/assets/default-character.png'; // Imagen por defecto si falla
+                  e.target.src = '/assets/default-character.png'; 
                 }}
               />
               <div className="image-overlay"></div>

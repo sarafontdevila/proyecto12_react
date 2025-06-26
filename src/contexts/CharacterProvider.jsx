@@ -1,6 +1,5 @@
-/*import React, { createContext, useState, useEffect, } from 'react';
-
-export const CharacterContext = createContext();
+import React, { useState, useEffect } from 'react';
+import { CharacterContext } from './CharacterContext.js';
 
 export const CharacterProvider = ({ children }) => {
   const [characters, setCharacters] = useState([]);
@@ -10,7 +9,7 @@ export const CharacterProvider = ({ children }) => {
   useEffect(() => {
     const fetchAllCharacters = async () => {
       try {
-        const response = await fetch(`https://thronesapi.com/api/v2/Characters`);
+        const response = await fetch('https://thronesapi.com/api/v2/Characters');
         const data = await response.json();
 
         if (Array.isArray(data) && data.length > 0) {
@@ -34,4 +33,4 @@ export const CharacterProvider = ({ children }) => {
       {children}
     </CharacterContext.Provider>
   );
-};*/
+};

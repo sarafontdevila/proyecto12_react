@@ -1,7 +1,6 @@
-/*import React, { createContext, useState, useEffect, } from 'react';
+/*import React, { createContext, useState, useEffect, useContext } from 'react';
 
-export const CharacterContext = createContext();
-
+const CharacterContext = createContext();
 export const CharacterProvider = ({ children }) => {
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,7 +9,8 @@ export const CharacterProvider = ({ children }) => {
   useEffect(() => {
     const fetchAllCharacters = async () => {
       try {
-        const response = await fetch(`https://thronesapi.com/api/v2/Characters`);
+        const response = await fetch(`https://thronesapi.com/api/v2/Characters`
+        );
         const data = await response.json();
 
         if (Array.isArray(data) && data.length > 0) {
@@ -28,10 +28,16 @@ export const CharacterProvider = ({ children }) => {
 
     fetchAllCharacters();
   }, []);
-
   return (
     <CharacterContext.Provider value={{ characters, loading, error }}>
       {children}
     </CharacterContext.Provider>
   );
+};
+export const useCharacters = () => {
+  const context = useContext(CharacterContext);
+  if (!context) {
+    throw new Error('useCharacters must be used within a CharacterProvider');
+  }
+  return context;
 };*/

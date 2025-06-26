@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Search.css";
+import useCharacters from "../../customHook/useCharacters";
 
 const Search = () => {
   const [formData, setFormData] = useState({
@@ -11,36 +12,49 @@ const Search = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const submit = async (e) => {
+ 
+  const { characters, loading, error: contextError } = useCharacters();
+
+  const submit = (e) => { 
     e.preventDefault();
     setError(null);
 
-    try {
-      const response = await fetch("https://thronesapi.com/api/v2/Characters");
-      const characters = await response.json();
+ 
+    if (loading) {
+      setError("Characters are still loading. Please try again in a moment.");
+      return;
+    }
 
-      const results = characters.filter((char) => {
-        const nameMatch = formData.characterName.trim()
-          ? char.fullName.toLowerCase().includes(formData.characterName.toLowerCase())
-          : true;
+    if (contextError) {
+      setError(`Failed to load character data: ${contextError}. Please try again later.`);
+      return;
+    }
 
-        const houseMatch = formData.characterHouse.trim()
-          ? char.family.toLowerCase().includes(formData.characterHouse.toLowerCase())
-          : true;
+   
+    if (!characters || characters.length === 0) {
+      setError("No character data available for search.");
+      return;
+    }
 
-        return nameMatch && houseMatch;
-      });
+  
+    const results = characters.filter((char) => {
+      const nameMatch = formData.characterName.trim()
+        ? char.fullName.toLowerCase().includes(formData.characterName.toLowerCase())
+        : true;
 
-      if (results.length === 0) {
-        setError("No matching characters found.");
-      } else if (results.length === 1) {
-        navigate(`/character/${results[0].id}`);
-      } else {
-        navigate("/results", { state: { results } });
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Error fetching data.");
+      const houseMatch = formData.characterHouse.trim()
+        ? char.family.toLowerCase().includes(formData.characterHouse.toLowerCase())
+        : true;
+
+      return nameMatch && houseMatch;
+    });
+
+    if (results.length === 0) {
+      setError("No matching characters found.");
+    } else if (results.length === 1) {
+      navigate(`/character/${results[0].id}`);
+    } else {
+      navigate("/results", { state: { results } });
     }
   };
 
@@ -66,6 +80,9 @@ const Search = () => {
         />
       </div>
       <button>Search</button>
+      {loading && <p>Loading characters...</p>}
+      {loading && <p>Loading characters...</p>}
+      {contextError && <p style={{ color: "orange" }}>Error from context: {contextError}</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
     </form>
   );

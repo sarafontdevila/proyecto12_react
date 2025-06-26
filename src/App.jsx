@@ -6,7 +6,7 @@ import Guess from "./pages/Guess/Guess";
 import Search from "./pages/Search/Search";
 import Header from "./components/Header/Header";
 import Results from "./components/Results/Results";
-import { CharacterProvider } from "./contexts/CharacterContext";
+import { CharacterProvider } from "./contexts/CharacterProvider";
 
 
 const App = () => {
