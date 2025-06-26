@@ -69,7 +69,7 @@ const Guess = () => {
         ...randomCharacter,
         fullName: randomCharacter.fullName || `${randomCharacter.firstName || ''} ${randomCharacter.lastName || ''}`.trim(),
         aliases: aliases,
-        imageUrl: randomCharacter.imageUrl || '/assets/default-character.png' 
+        imageUrl: randomCharacter.imageUrl /*|| '/assets/default-character.png' */
       };
 
       dispatch({

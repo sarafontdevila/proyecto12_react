@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+/*import { useState, useEffect } from 'react';
 
 const useFetchCharacter = (id) => {
   const [character, setCharacter] = useState(null); 
@@ -36,4 +36,4 @@ const useFetchCharacter = (id) => {
   return { character, loading, error }; 
 };
 
-export default useFetchCharacter;
+export default useFetchCharacter;*/

@@ -19,6 +19,13 @@ const Search = () => {
     e.preventDefault();
     setError(null);
 
+    console.log("--- SUBMIT INICIADO ---");
+    console.log("Form Data:", formData);
+    console.log("Loading state:", loading);
+    console.log("Context Error:", contextError);
+    console.log("Characters available for search (first one):", characters.length, characters[0]);
+
+
  
     if (loading) {
       setError("Characters are still loading. Please try again in a moment.");
@@ -49,10 +56,13 @@ const Search = () => {
       return nameMatch && houseMatch;
     });
 
+    console.log("DEBUG: Search Results Array:", results);
+    console.log("DEBUG: Number of results:", results.length)
+
     if (results.length === 0) {
       setError("No matching characters found.");
     } else if (results.length === 1) {
-      navigate(`/character/${results[0].id}`);
+      navigate(`/character/${results[0].id}`, { state: { character: results[0] } });
     } else {
       navigate("/results", { state: { results } });
     }

@@ -1,11 +1,10 @@
-import {  Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Character.css"
 import Header from "../../components/Header/Header";
 
 
 const Character = () => {
   const location = useLocation();
-  
 
   const character = location.state?.character;
 
