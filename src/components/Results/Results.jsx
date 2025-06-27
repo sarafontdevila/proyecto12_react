@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import './Results.css'; 
 import CharacterCard from '../CharacterCard/CharacterCard';
+import './Results.css';
 
 const Results = () => {
   const location = useLocation();

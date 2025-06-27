@@ -49,9 +49,6 @@
   color: var(--color-1);
   font-weight: bold;
   box-shadow: 0 4px 12px var(--color-1);
-}
-
-.nav-button:active {
   transform: translateY(0);
 }
 
